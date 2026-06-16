@@ -1,57 +1,76 @@
-# LMS 实验手册爬取工具
+# LMS 实验报告爬取
 
-这是一个用于爬取 LMS 平台实验操作手册并转换为 Markdown 格式的 Python 工具，支持单 URL 爬取和批量 URL 爬取两种模式。
+将 [LMS](http://10.30.0.135) 平台上的实验操作手册一键保存为 Markdown，支持图片下载和 ZIP 打包。
 
----
+## 版本
 
-## 📦 环境依赖
+| 版本 | 目录/文件 | 说明 |
+|------|----------|------|
+| **Chrome 扩展（推荐）** | `extension/` | 一键保存，无需登录，图片内嵌 |
+| Node.js 脚本 | `crawl_lms.js` | 命令行批量爬取 |
+| Python 脚本 | `crawl_lms.py` | 命令行批量爬取 |
 
-本项目基于 Python 3 开发，运行前请确保安装以下依赖：
+## Chrome 扩展
+
+### 安装
+
+1. 打开 `chrome://extensions`
+2. 开启右上角「开发者模式」
+3. 点击「加载已解压的扩展程序」
+4. 选择 `extension/` 目录
+
+### 使用
+
+- **保存当前页面**：打开 LMS 作业页面 → 点击右下角浮动按钮或插件图标
+- **批量爬取**：点击插件图标 → 输入 Assignments 和 Module ID 范围 → 开始
+
+输出为 ZIP 压缩包，解压后目录结构：
+
+```
+实验名称.zip
+└── 实验名称/
+    ├── 实验名称.md
+    └── 实验名称_files/
+        ├── 实验名称_img01.png
+        └── 实验名称_img02.jpg
+```
+
+## 命令行脚本
+
+### Python
 
 ```bash
+# 安装依赖
 pip install requests
+
+# 单URL爬取
+python crawl_lms.py http://10.30.0.135/courses/194/assignments/2179?module_item_id=8601
+
+# 批量爬取
+python crawl_lms.py --batch 2181 2184 8603 8606
+
+# 环境变量（可选）
+set LMS_USERNAME=xxx
+set LMS_PASSWORD=xxx
 ```
 
-## 🚀 使用说明
-
-### 1. 单 URL 爬取（`crawl_lms.py`）
-
-适合单个实验手册的快速爬取。
+### Node.js
 
 ```bash
-python crawl_lms.py "目标LMS页面URL"
+# 安装依赖
+npm install
+
+# 单URL爬取
+node crawl_lms.js http://10.30.0.135/courses/194/assignments/2179?module_item_id=8601
+
+# 批量爬取
+node crawl_lms.js --batch 2181 2184 8603 8606
 ```
 
-**示例：**
+## 功能特性
 
-```bash
-python crawl_lms.py "http://10.30.0.135/courses/194/assignments/2179?module_item_id=8601"
-```
-
-### 2. 批量 URL 爬取（`new_crawl_lms.py`）
-
-适合批量爬取多个实验手册，支持按范围批量获取任务。
-
-```bash
-python new_crawl_lms.py --batch <start_assign> <end_assign> <start_module> <end_module>
-```
-
-**示例：**
-
-```bash
-python new_crawl_lms.py --batch 2181 2184 8603 8606
-```
-
-## 📁 文件说明
-
-| 文件名             | 功能描述                                              |
-| ------------------ | ----------------------------------------------------- |
-| `crawl_lms.py`     | 基础版本，仅支持单 URL 爬取，适合快速获取单个实验手册 |
-| `new_crawl_lms.py` | 增强版本，支持批量爬取，可按任务和模块范围批量处理    |
-
-## ⚠️ 注意事项
-
-1. 请确保你拥有访问目标 LMS 平台的合法权限，本工具仅用于个人学习与实验用途。
-2. 部分页面可能需要登录权限，若爬取失败请检查账号登录状态或 Cookie 配置。
-3. 爬取频率过高可能触发平台反爬机制，建议批量爬取时适当增加请求间隔。
-4. 生成的 Markdown 文件默认保存在当前目录下，可根据需要修改脚本中的保存路径。
+- HTML → Markdown 转换（标题、列表、表格、代码块）
+- 代码语言自动识别（Java / XML / Bash / SQL / Python / JS / Go 等 15 种）
+- 图片自动下载并转为相对路径引用
+- ZIP 打包下载
+- 批量爬取带进度显示
