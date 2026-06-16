@@ -1,0 +1,15 @@
+{
+  "name": "lsn-lms-crawler",
+  "version": "1.0.0",
+  "description": "爬取 LMS 实验操作手册并保存为 Markdown",
+  "type": "module",
+  "scripts": {
+    "start": "node crawl_lms.js"
+  },
+  "dependencies": {
+    "axios": "^1.7.0",
+    "cheerio": "^1.0.0",
+    "commander": "^12.1.0",
+    "he": "^1.2.0"
+  }
+}
