@@ -187,7 +187,8 @@ async function extractPage() {
       const ext = mime.includes("png") ? "png" : mime.includes("gif") ? "gif" : mime.includes("svg") ? "svg" : mime.includes("webp") ? "webp" : "jpg";
       imgIndex++;
       const imgFilename = safeName + "_img" + String(imgIndex).padStart(2, "0") + "." + ext;
-      img.setAttribute("src", imgFilename);
+      const imgSrc = safeName + ".assets/" + imgFilename;
+      img.setAttribute("src", imgSrc);
       imageFiles.push({ filename: imgFilename, dataUrl });
     } catch (e) {
       img.setAttribute("src", src);
@@ -251,7 +252,7 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
         const { title, md, images } = msg;
         const zip = new JSZip();
         const folder = zip.folder(title);
-        const imgFolder = folder.folder(title + "_files");
+        const imgFolder = folder.folder(title + ".assets");
 
         folder.file(title + ".md", md);
         for (const img of (images || [])) {
@@ -298,7 +299,7 @@ async function processNext() {
       // 打包为 zip
       const zip = new JSZip();
       const folder = zip.folder(data.title);
-      const imgFolder = folder.folder(data.title + "_files");
+      const imgFolder = folder.folder(data.title + ".assets");
 
       folder.file(data.title + ".md", data.md + "\n");
       for (const img of (data.images || [])) {

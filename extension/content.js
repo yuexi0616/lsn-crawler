@@ -117,7 +117,8 @@ async function extractAndConvert() {
       const ext = mime.includes("png") ? "png" : mime.includes("gif") ? "gif" : mime.includes("svg") ? "svg" : mime.includes("webp") ? "webp" : "jpg";
       imgIndex++;
       const imgFilename = safeName + "_img" + String(imgIndex).padStart(2, "0") + "." + ext;
-      img.setAttribute("src", imgFilename);
+      const imgSrc = safeName + ".assets/" + imgFilename;
+      img.setAttribute("src", imgSrc);
       imageFiles.push({ filename: imgFilename, dataUrl });
     } catch (e) {
       img.setAttribute("src", src);
